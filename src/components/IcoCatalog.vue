@@ -4,7 +4,7 @@
     >
         <v-img
                 :aspect-ratio="16/9"
-                src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+                src="assets/none.jpg"
         ></v-img>
         <v-card-title>
             <div>

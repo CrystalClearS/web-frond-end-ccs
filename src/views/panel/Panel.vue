@@ -1,11 +1,12 @@
 <template>
     <v-content>
         <v-navigation-drawer
-                v-model="drawerRight"
                 fixed
                 right
                 clipped
                 app
+
+                hidden-xs-only
         >
         </v-navigation-drawer>
         <v-toolbar
@@ -14,6 +15,7 @@
                 fixed
                 app
                 clipped-right
+                hidden-xs-only
         >
             <v-toolbar-side-icon @click.stop="left = !left"></v-toolbar-side-icon>
             <v-toolbar-title>Crystal</v-toolbar-title>
@@ -23,9 +25,10 @@
             </v-btn>
         </v-toolbar>
         <v-navigation-drawer
-                v-model="drawer"
                 fixed
                 app
+
+                hidden-xs-only
         >
         </v-navigation-drawer>
         <v-navigation-drawer
@@ -33,11 +36,15 @@
                 temporary
                 fixed
         >
-            <Menu/>
+            <div class="hidden-md-only hidden-lg-only hidden-xl-only"
+            >
+                <Menu/>
+            </div>
+
         </v-navigation-drawer>
         <!--<v-content>-->
         <v-layout row wrap>
-            <v-flex md3>
+            <v-flex md3 hidden-xs-only hidden-sm-only>
                 <Menu/>
             </v-flex>
             <v-flex xs12 md9 pa-2>

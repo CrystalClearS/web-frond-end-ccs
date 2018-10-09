@@ -3,7 +3,7 @@
         <v-flex xs12 md4 pa-2>
             <v-card>
                 <v-img
-                        src="https://cdn.vuetifyjs.com/images/lists/ali.png"
+                        src="assets/none.jpg"
                         height="200px"
                 >
                     <v-layout
@@ -500,7 +500,7 @@
                                 <v-checkbox v-model="formCategories.notifications"></v-checkbox>
                             </v-list-tile-action>
                             <v-list-tile-avatar>
-                                <img :src="`https://cdn.vuetifyjs.com/images/lists/1.jpg`">
+                                <img :src="`assets/none.jpg`">
                             </v-list-tile-avatar>
 
                             <v-list-tile-content @click="formCategories.notifications = !formCategories.notifications">
@@ -567,19 +567,19 @@
             items: [
 
                 {
-                    avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+                    avatar: 'assets/none.jpg',
                     title: 'Brunch this weekend?',
 
                 },
 
                 {
-                    avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+                    avatar: 'assets/none.jpg',
                     title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
 
                 },
 
                 {
-                    avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+                    avatar: 'assets/none.jpg',
                     title: 'Oui oui',
 
                 },

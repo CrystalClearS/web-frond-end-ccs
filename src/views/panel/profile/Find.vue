@@ -36,7 +36,7 @@
                                     <v-img
                                             class="white--text"
                                             width="100%"
-                                            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                                            src="assets/none.jpg"
                                     >
                                         <v-container fill-height fluid>
                                             <v-layout fill-height>
