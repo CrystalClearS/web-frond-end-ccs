@@ -135,7 +135,8 @@
                 <v-card-title primary-title>
                     <div>
                         <h3 class="headline mb-0">Имен Фамилин Отчествович</h3>
-                        <div>Located two hours south of Sydney in the <br>Southern Highlands of New South Wales, ...</div>
+                        <div>Located two hours south of Sydney in the <br>Southern Highlands of New South Wales, ...
+                        </div>
                     </div>
                 </v-card-title>
                 <v-card-actions>
@@ -162,28 +163,7 @@
                     <v-card flat>
                         <v-card-text>
                             <!-- Услуги -->
-                            <v-card>
-                                <v-card-title primary-title>
-                                    <div>
-                                        <h3 class="headline mb-0">Услуги</h3>
-                                    </div>
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-list two-line subheader>
-                                        <v-list-tile avatar>
-                                            <v-list-tile-content>
-                                                <v-list-tile-title>Show your status</v-list-tile-title>
-                                                <v-list-tile-sub-title>Your status is visible to everyone</v-list-tile-sub-title>
-                                            </v-list-tile-content>
-                                            <v-list-tile-action>
-                                                <v-icon>delete_forever</v-icon>
-                                            </v-list-tile-action>
-                                        </v-list-tile>
-
-                                    </v-list>
-                                </v-card-text>
-                                <v-btn block flat color="grey" @click.prevent="dialogService = !dialogService">Добавить услуги</v-btn>
-                            </v-card>
+                            <Service/>
                             <br/>
                             <!-- Категории -->
                             <v-card>
@@ -213,7 +193,9 @@
                                         </v-list-tile>
                                     </v-list>
                                 </v-card-text>
-                                <v-btn block flat color="grey" @click.prevent="dialogCategory = !dialogCategory">Добавить категории</v-btn>
+                                <v-btn block flat color="grey" @click.prevent="dialogCategory = !dialogCategory">
+                                    Добавить категории
+                                </v-btn>
                             </v-card>
 
                             <br/>
@@ -233,10 +215,10 @@
                                         >
                                             <v-card flat tile class="d-flex">
                                                 <v-img @click="`#`"
-                                                        :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                                                        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-                                                        aspect-ratio="1"
-                                                        class="grey lighten-2"
+                                                       :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+                                                       :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+                                                       aspect-ratio="1"
+                                                       class="grey lighten-2"
                                                 >
                                                     <v-layout
                                                             slot="placeholder"
@@ -245,7 +227,8 @@
                                                             justify-center
                                                             ma-0
                                                     >
-                                                        <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                                        <v-progress-circular indeterminate
+                                                                             color="grey lighten-5"></v-progress-circular>
                                                     </v-layout>
                                                 </v-img>
                                             </v-card>
@@ -387,16 +370,17 @@
                                                     prepend-icon="event"
                                                     @blur="date = parseDate(dateFormatted)"
                                             ></v-text-field>
-                                            <v-date-picker v-model="date" no-title @input="menu = false"></v-date-picker>
+                                            <v-date-picker v-model="date" no-title
+                                                           @input="menu = false"></v-date-picker>
                                         </v-menu>
 
 
                                         <v-container fluid grid-list-md>
                                             <v-layout row wrap>
-                                                <v-flex  v-for="(item,i) in 16"  :key="i" xs12 md6>
+                                                <v-flex v-for="(item,i) in 16" :key="i" xs12 md6>
                                                     <v-checkbox
-                                                                :label="(item + 6) + `:00  - ` + (i + 7) + `:00`"
-                                                                hide-details
+                                                            :label="(item + 6) + `:00  - ` + (i + 7) + `:00`"
+                                                            hide-details
                                                     ></v-checkbox>
                                                 </v-flex>
                                             </v-layout>
@@ -520,23 +504,25 @@
 
 <script>
     import Reviews from '../../../components/Reviews'
+    import Service from './components/Service'
 
     export default {
         name: "User",
-        components:{
+        components: {
             Reviews,
+            Service
         },
         data: () => ({
             rating: 4.5,
             dialog: false,
             dialogService: false,
             dialogCategory: false,
-            sexItems:[
-                {'id' : 0, 'text' : 'Не указано'},
-                {'id' : 1, 'text' : 'Мужской'},
-                {'id' : 2, 'text' : 'Женский'},
+            sexItems: [
+                {'id': 0, 'text': 'Не указано'},
+                {'id': 1, 'text': 'Мужской'},
+                {'id': 2, 'text': 'Женский'},
             ],
-            form:{
+            form: {
                 last_name: "",
                 first_name: "",
                 phone: "",
@@ -549,16 +535,16 @@
                 isReviews: true,
             },
             formService: {
-                description : "",
-                price : "",
-                currency : "",
-                count : "",
-                unit : "",
+                description: "",
+                price: "",
+                currency: "",
+                count: "",
+                unit: "",
             },
             formCategories: {
-                items : [],
+                items: [],
 
-                notifications :false,
+                notifications: false,
             },
             tab: null,
             tabs: [
@@ -589,23 +575,23 @@
             menu: false,
         }),
         computed: {
-            computedDateFormatted () {
+            computedDateFormatted() {
                 return this.formatDate(this.date)
             }
         },
         watch: {
-            date (val) {
+            date(val) {
                 this.dateFormatted = this.formatDate(this.date)
             }
         },
         methods: {
-            formatDate (date) {
+            formatDate(date) {
                 if (!date) return null
 
                 const [year, month, day] = date.split('-')
                 return `${month}/${day}/${year}`
             },
-            parseDate (date) {
+            parseDate(date) {
                 if (!date) return null
 
                 const [month, day, year] = date.split('/')

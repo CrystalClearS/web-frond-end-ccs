@@ -5,7 +5,6 @@
                 right
                 clipped
                 app
-
                 hidden-xs-only
         >
         </v-navigation-drawer>
@@ -36,11 +35,9 @@
                 temporary
                 fixed
         >
-            <div class="hidden-md-only hidden-lg-only hidden-xl-only"
-            >
+            <div class="hidden-md-only hidden-lg-only hidden-xl-only">
                 <Menu/>
             </div>
-
         </v-navigation-drawer>
         <!--<v-content>-->
         <v-layout row wrap>
@@ -51,7 +48,6 @@
                 <router-view></router-view>
             </v-flex>
         </v-layout>
-
         <!--</v-content>-->
         <v-navigation-drawer
                 v-model="right"
@@ -60,13 +56,13 @@
                 fixed
         ></v-navigation-drawer>
         <v-footer color="blue-grey" class="white--text" app>
-
         </v-footer>
     </v-content>
 </template>
 
 <script>
     import Menu from '../../components/Menu'
+
     export default {
         components: {
             Menu
