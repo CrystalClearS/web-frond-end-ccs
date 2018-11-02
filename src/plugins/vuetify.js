@@ -27,6 +27,8 @@ import {
     VExpansionPanel,
     VDatePicker,
     VMenu,
+    VStepper,
+    VProgressLinear,
     transitions
 } from 'vuetify'
 import 'vuetify/src/stylus/app.styl'
@@ -59,6 +61,8 @@ Vue.use(Vuetify, {
         VExpansionPanel,
         VDatePicker,
         VMenu,
+        VStepper,
+        VProgressLinear,
         transitions
     },
     theme: {

@@ -1,37 +1,65 @@
+/* eslint-disable */
 <template>
     <div>
         <v-tabs
                 slot="extension"
                 v-model="tab"
-
                 align-with-title
         >
             <v-tabs-slider color="blue-grey"></v-tabs-slider>
 
-            <v-tab v-for="(item,i) in items" :key="i">
-                {{ item }}
-            </v-tab>
+            <v-tab key="0"> Категории </v-tab>
+            <v-tab key="1"> Карта </v-tab>
+            <v-tab key="2" v-if="button.isShow"> {{button.title}} </v-tab>
+
             <v-spacer></v-spacer>
-            <v-btn icon @click.native="dialog = !dialog">
-                <v-icon>search</v-icon>
-            </v-btn>
+            <!--<v-btn icon @click.native="dialog = !dialog">-->
+                <!--<v-icon>search</v-icon>-->
+            <!--</v-btn>-->
         </v-tabs>
 
         <v-tabs-items v-model="tab">
-            <v-tab-item :key="0">
+            <!-- Категории -->
+            <v-tab-item key="0">
                 <v-container fluid grid-list-md>
                     <v-layout row wrap>
-                        <v-flex v-for="(element, i) in categories" pa-1 :key="i" xs6 md4>
-                            <IcoCatalog :text="element.text" ></IcoCatalog>
+                        <v-flex v-for="(element, i) in categories" pa-1 :key="i" xs6 md4 >
+                            <IcoCatalog @click="onChangeCategories(element.id, element)" :image="element.image" :text="element.name" ></IcoCatalog>
                         </v-flex>
                     </v-layout>
                 </v-container>
             </v-tab-item>
-            <v-tab-item :key="1">
+
+            <!-- Карта -->
+            <v-tab-item key="1">
+                <v-card flat>
+                    <v-card-text>
+                        <GmapMap
+                                :center="{lat:10, lng:10}"
+                                :zoom="7"
+                                map-type-id="terrain"
+                                style="width: 100%; height: 500px"
+                        >
+                            <!--<GmapMarker-->
+                            <!--:key="index"-->
+                            <!--v-for="(m, index) in markers"-->
+                            <!--:position="m.position"-->
+                            <!--:clickable="true"-->
+                            <!--:draggable="true"-->
+                            <!--@click="center=m.position"-->
+                            <!--/>-->
+                        </GmapMap>
+
+                    </v-card-text>
+                </v-card>
+            </v-tab-item>
+
+            <!-- Поиск -->
+            <v-tab-item key="2">
                 <v-card flat>
                     <v-card-text>
                         <v-layout>
-                            <v-flex xs12 md4 flat v-for="item in users" pa-1>
+                            <v-flex xs12 md4 flat v-for="(item, i) in users" :key="i" pa-1>
                                 <v-card>
                                     <v-img
                                             class="white--text"
@@ -59,33 +87,12 @@
                             </v-flex>
                         </v-layout>
 
-
-                        <v-btn block flat color="indigo">Посмотреть еще</v-btn>
+                        <!--<v-btn block flat color="indigo">Посмотреть еще</v-btn>-->
+                        <v-btn v-if="users.length === 0" block flat color="indigo">Ничего не найденно</v-btn>
                     </v-card-text>
                 </v-card>
             </v-tab-item>
-            <v-tab-item  :key="2">
-                <v-card flat>
-                    <v-card-text>
-                        <GmapMap
-                                :center="{lat:10, lng:10}"
-                                :zoom="7"
-                                map-type-id="terrain"
-                                style="width: 100%; height: 500px"
-                        >
-                            <!--<GmapMarker-->
-                                    <!--:key="index"-->
-                                    <!--v-for="(m, index) in markers"-->
-                                    <!--:position="m.position"-->
-                                    <!--:clickable="true"-->
-                                    <!--:draggable="true"-->
-                                    <!--@click="center=m.position"-->
-                            <!--/>-->
-                        </GmapMap>
 
-                    </v-card-text>
-                </v-card>
-            </v-tab-item>
         </v-tabs-items>
 
 
@@ -159,7 +166,6 @@
                 </form>
                 <v-divider></v-divider>
             </v-card-text>
-
             <div style="flex: 1 1 auto;"></div>
         </v-card>
     </v-dialog>
@@ -167,6 +173,7 @@
 </template>
 
 <script>
+
     import IcoCatalog  from '../../../components/IcoCatalog'
 
     export default {
@@ -176,12 +183,26 @@
         },
         data () {
             return {
-                tab: null,
+                button: {
+                   title : 'Поиск',
+                   defaultTitle : 'Поиск',
+                   isShow: false,
+                },
+                users: [
+
+                ],
+
+                categories: [
+
+                ],
+                //=======================
+
+                tab: 0,
                 rating: 3,
                 items: [
                     'Категории', 'Поиск', 'Карта'
                 ],
-                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                text: '',
                 dialog: false,
 
                 isDeparture: false,
@@ -210,18 +231,30 @@
 
                 ],
 
-                users: [
-                    { text: 'State 1' },
-                    { text: 'State 2' },
-                    { text: 'State 3' },
-                    { text: 'State 4' },
-                ],
-                categories: [
-                    { text: 'State 1' },
-                    { text: 'State 2' },
-                    { text: 'State 3' },
-                    { text: 'State 4' },
-                ]
+            }
+        },
+        created: function () {
+
+           this.fetchCategories();
+        },
+        methods: {
+            fetchCategories(){
+                net.get('general/category/get')
+                    .onSuccess((items)=>{
+                        this.categories = items;
+                    });
+            },
+            onChangeCategories(id, element){
+                net.get('general/category/{id}/get-services', {id : id})
+                    .onSuccess((items)=>{
+                        debugger;
+
+                        this.button.title = element.name;
+                        this.button.isShow = true;
+                        this.tab = 2;
+
+                        this.users = items;
+                    });
             }
         }
     }

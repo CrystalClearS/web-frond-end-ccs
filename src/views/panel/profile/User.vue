@@ -3,7 +3,7 @@
         <v-flex xs12 md4 pa-2>
             <v-card>
                 <v-img
-                        src="assets/none.jpg"
+                        :src="userAvatar"
                         height="200px"
                 >
                     <v-layout
@@ -21,10 +21,6 @@
                 </v-img>
                 <v-card-title>
                     <div>
-                        <span>
-                            Текст наполнителя - это текст, который разделяет некоторые характеристики реального письменного текста, но генерируется случайным образом или иным образом. Он может использоваться для отображения выборки шрифтов, генерации текста для тестирования или для подмены фильтра спама по электронной почте.
-
-                        </span>
                         <v-rating
                                 v-model="rating"
                                 :readonly="true"
@@ -43,50 +39,48 @@
                     <v-btn block flat color="red">Удалить в избраное</v-btn>
                 </v-card-actions>
 
+
                 <v-list two-line>
-                    <v-list-tile @click="">
+                    <v-list-tile @click="" v-if="userIsPhone">
                         <v-list-tile-action>
                             <v-icon color="indigo">phone</v-icon>
                         </v-list-tile-action>
-
                         <v-list-tile-content>
-                            <v-list-tile-title>(650) 555-1234</v-list-tile-title>
+                            <v-list-tile-title>{{userPhone}}</v-list-tile-title>
                             <v-list-tile-sub-title>Mobile</v-list-tile-sub-title>
                         </v-list-tile-content>
-
                     </v-list-tile>
 
-                    <v-list-tile @click="">
-                        <v-list-tile-action></v-list-tile-action>
+                    <!--<v-list-tile @click="">-->
+                        <!--<v-list-tile-action></v-list-tile-action>-->
 
-                        <v-list-tile-content>
-                            <v-list-tile-title>(323) 555-6789</v-list-tile-title>
-                            <v-list-tile-sub-title>Work</v-list-tile-sub-title>
-                        </v-list-tile-content>
+                        <!--<v-list-tile-content>-->
+                            <!--<v-list-tile-title>(323) 555-6789</v-list-tile-title>-->
+                            <!--<v-list-tile-sub-title>Work</v-list-tile-sub-title>-->
+                        <!--</v-list-tile-content>-->
 
-                    </v-list-tile>
+                    <!--</v-list-tile>-->
 
                     <v-divider inset></v-divider>
-
-                    <v-list-tile @click="">
+                    <v-list-tile @click="" v-if="userIsEmail">
                         <v-list-tile-action>
                             <v-icon color="indigo">mail</v-icon>
                         </v-list-tile-action>
 
                         <v-list-tile-content>
-                            <v-list-tile-title>aliconnors@example.com</v-list-tile-title>
+                            <v-list-tile-title>{{userEmail}}</v-list-tile-title>
                             <v-list-tile-sub-title>Personal</v-list-tile-sub-title>
                         </v-list-tile-content>
                     </v-list-tile>
 
-                    <v-list-tile @click="">
-                        <v-list-tile-action></v-list-tile-action>
+                    <!--<v-list-tile @click="">-->
+                        <!--<v-list-tile-action></v-list-tile-action>-->
 
-                        <v-list-tile-content>
-                            <v-list-tile-title>ali_connors@example.com</v-list-tile-title>
-                            <v-list-tile-sub-title>Work</v-list-tile-sub-title>
-                        </v-list-tile-content>
-                    </v-list-tile>
+                        <!--<v-list-tile-content>-->
+                            <!--<v-list-tile-title>ali_connors@example.com</v-list-tile-title>-->
+                            <!--<v-list-tile-sub-title>Work</v-list-tile-sub-title>-->
+                        <!--</v-list-tile-content>-->
+                    <!--</v-list-tile>-->
 
                     <v-divider inset></v-divider>
 
@@ -96,8 +90,8 @@
                         </v-list-tile-action>
 
                         <v-list-tile-content>
-                            <v-list-tile-title>1400 Main Street</v-list-tile-title>
-                            <v-list-tile-sub-title>Orlando, FL 79938</v-list-tile-sub-title>
+                            <v-list-tile-title>{{userAddress}}</v-list-tile-title>
+                            <!--<v-list-tile-sub-title>Orlando, FL 79938</v-list-tile-sub-title>-->
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list>
@@ -134,9 +128,8 @@
             <v-card>
                 <v-card-title primary-title>
                     <div>
-                        <h3 class="headline mb-0">Имен Фамилин Отчествович</h3>
-                        <div>Located two hours south of Sydney in the <br>Southern Highlands of New South Wales, ...
-                        </div>
+                        <h3 class="headline mb-0">{{userFullName}}</h3>
+                        <div>{{userDescription}}</div>
                     </div>
                 </v-card-title>
                 <v-card-actions>
@@ -512,7 +505,22 @@
             Reviews,
             Service
         },
+        created: function () {
+            let url = this.id === 0 ? 'client/profile/get' : '';
+            net.get(url, {id : this.id})
+                .onSuccess((user) => {
+                    this.user = user;
+                });
+
+        },
+        props:{
+            id: {
+                type: Number,
+                default: 0
+            },
+        },
         data: () => ({
+            user: {},
             rating: 4.5,
             dialog: false,
             dialogService: false,
@@ -574,9 +582,46 @@
             dateFormatted: null,
             menu: false,
         }),
+
         computed: {
             computedDateFormatted() {
                 return this.formatDate(this.date)
+            },
+            userFullName(){
+                let user = this.$store.getters.user;
+
+                return user.first_name + ' ' + user.surname;
+            },
+            userDescription(){
+                let user = this.$store.getters.user;
+                return user.about;
+            },
+            //======================================
+            userPhone(){
+                let user = this.$store.getters.user;
+                return user.phone;
+            },
+            userIsPhone(){
+                let user = this.$store.getters.user;
+                return user.phone ? user.phone.length > 0 : false;
+            },
+            //======================================
+            userEmail(){
+                let user = this.$store.getters.user;
+                return user.email;
+            },
+            userIsEmail(){
+                let user = this.$store.getters.user;
+                return user.email ? user.email.length > 0 : false;
+            },
+
+            userAvatar(){
+                let user = this.$store.getters.user;
+                return user.avatar;
+            },
+            userAddress(){
+                let user = this.$store.getters.user;
+                return user.address;
             }
         },
         watch: {

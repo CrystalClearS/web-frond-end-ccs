@@ -1,6 +1,6 @@
 <template>
     <v-list dense>
-        <template v-for="(item, index) in items">
+        <template v-for="(item, index) in menu">
             <v-layout
                     row
                     v-if="item.heading"
@@ -62,31 +62,51 @@
 <script>
     export default {
         name: "Menu",
-        data: ()=> ({
+        data: () => ({
             items: [
-                { icon: 'home', text: 'Главная', action:'/'},
-                { icon: 'person', text: 'Профиль', action:'/profile' },
-                { icon: 'message', text: 'Сообщения', action:'/message' },
-                { icon: 'settings', text: 'Настройки', action:'/config' },
-                { icon: 'location_on', text: 'Город', action:'/maps' },
-                {
-                    icon: 'keyboard_arrow_up',
-                    'icon-alt': 'keyboard_arrow_down',
-                    text: 'Тест',
-                    model: false,
-                    children: [
-                        { text: 'Import' },
-                        { text: 'Export' },
-                        { text: 'Print' },
-                        { text: 'Undo changes' },
-                        { text: 'Other contacts' }
-                    ]
-                },
+                {isAuth: false, icon: 'home', text: 'Главная', action: '/'},
+                {isAuthWindow : true, isAuth: false, icon: 'person', text: 'Профиль', action: '/profile'},
+                {isAuth: true, icon: 'message', text: 'Сообщения', action: '/message'},
+                {isAuth: true, icon: 'settings', text: 'Настройки', action: '/config'},
+                {isAuth: false, icon: 'location_on', text: 'Город', action: '/maps'},
+                // {
+                //     icon: 'keyboard_arrow_up',
+                //     'icon-alt': 'keyboard_arrow_down',
+                //     text: 'Тест',
+                //     model: false,
+                //     children: [
+                //         { text: 'Import' },
+                //         { text: 'Export' },
+                //         { text: 'Print' },
+                //         { text: 'Undo changes' },
+                //         { text: 'Other contacts' }
+                //     ]
+                // },
             ]
         }),
-        methods : {
-            onClick(item, i, a){
-                this.$router.push({ path: item.action });
+        methods: {
+            onClick(item, i, a) {
+                if(item.isAuthWindow && !this.$store.getters.isAuth){
+                    this.$store.dispatch('setShowAuth', true);
+                    this.$store.dispatch('setAction', item.action);
+                    return;
+                }
+                this.$router.push({path: item.action});
+            }
+        },
+        computed: {
+            isAuth() {
+                return this.$store.getters.isAuth
+            },
+            menu() {
+                let items = [];
+                for (let i in this.items) {
+                    if(this.items[i].isAuth && !this.isAuth){
+                        continue;
+                    }
+                    items.push(this.items[i]);
+                }
+                return items;
             }
         }
     }

@@ -1,7 +1,13 @@
-import '@babel/polyfill'
+// import '@babel/polyfill'
 import Vue from 'vue'
 
 import './plugins/vuetify'
+window.axios = require('axios');
+
+require('./notifications');
+require('./net');
+
+
 
 //import Vuetify from 'vuetify'
 //Vue.use(Vuetify);
@@ -28,11 +34,41 @@ import App from './App.vue'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+axios.interceptors.response.use((response) => {
+    if(response.data.status === 'error')
+        return Promise.reject('undefined error');
+
+    return response;
+
+}, (error) => {
+    debugger;
+    let code = response.status;
+    if(code === 401) {
+        router.push('auth');
+        return;
+    }
+    else if(code === 403) {
+        if(!net.authRequest()){
+            store.dispatch('setShowAuth', true);
+            store.dispatch('setUser', undefined);
+        }
+    }
+    else if(code === 404){
+
+    }
+    else if(code >= 500) {
+        showError(`Server Error ${code}`, error.message)
+    }
+    return Promise.reject(error);
+
+});
+
+
 
 new Vue({
     router,
     store,
   render: h => h(App)
 
-}).$mount('#app')
+}).$mount('#app');
