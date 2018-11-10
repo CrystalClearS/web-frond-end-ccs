@@ -12,13 +12,26 @@
                     >
                         <v-card-title>
                             <v-spacer></v-spacer>
-                            <v-btn dark icon class="mr-3" @click.prevent="dialog = !dialog">
+                            <v-btn dark icon class="mr-3">
                                 <v-icon>edit</v-icon>
                             </v-btn>
                         </v-card-title>
                         <v-spacer></v-spacer>
                     </v-layout>
                 </v-img>
+
+                <div class="" v-if="isUserEdit">
+                    <v-btn id="pick-avatar" block flat color="indigo">Загрузить аватарку</v-btn>
+                    <v-btn  @click.prevent="dialogUserEdit = !dialogUserEdit" block flat color="indigo">Настройки</v-btn>
+                    <avatar-cropper
+                            @uploaded="handleUploaded"
+                            trigger="#pick-avatar"
+                            upload-form-name="image"
+                            :upload-url="imageUpload"
+                            :upload-headers="imageHeaders"
+                            :labels="{submit: 'Принять', cancel: 'Отмена'}"
+                            />
+                </div>
                 <v-card-title>
                     <div>
                         <v-rating
@@ -31,14 +44,14 @@
                         ></v-rating>
                     </div>
                 </v-card-title>
-
-                <v-card-actions>
-                    <v-btn block flat color="indigo">Добавить в избраное</v-btn>
+                <v-card-actions v-if="!isUserEdit">
+                    <v-card-actions>
+                        <v-btn block flat color="indigo">Добавить в избраное</v-btn>
+                    </v-card-actions>
+                    <v-card-actions>
+                        <v-btn block flat color="red">Удалить в избраное</v-btn>
+                    </v-card-actions>
                 </v-card-actions>
-                <v-card-actions>
-                    <v-btn block flat color="red">Удалить в избраное</v-btn>
-                </v-card-actions>
-
 
                 <v-list two-line>
                     <v-list-tile @click="" v-if="userIsPhone">
@@ -73,15 +86,6 @@
                         </v-list-tile-content>
                     </v-list-tile>
 
-                    <!--<v-list-tile @click="">-->
-                        <!--<v-list-tile-action></v-list-tile-action>-->
-
-                        <!--<v-list-tile-content>-->
-                            <!--<v-list-tile-title>ali_connors@example.com</v-list-tile-title>-->
-                            <!--<v-list-tile-sub-title>Work</v-list-tile-sub-title>-->
-                        <!--</v-list-tile-content>-->
-                    <!--</v-list-tile>-->
-
                     <v-divider inset></v-divider>
 
                     <v-list-tile @click="">
@@ -91,20 +95,21 @@
 
                         <v-list-tile-content>
                             <v-list-tile-title>{{userAddress}}</v-list-tile-title>
-                            <!--<v-list-tile-sub-title>Orlando, FL 79938</v-list-tile-sub-title>-->
+                            <v-list-tile-sub-title></v-list-tile-sub-title>
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list>
             </v-card>
             <br>
-            <v-card>
+
+            <v-card v-if="favorites.length > 0">
                 <v-card-title primary-title>
                     <div>
                         <h3 class="headline mb-0">Избранное</h3>
                     </div>
                     <v-list subheader>
                         <v-list-tile
-                                v-for="item in items"
+                                v-for="item in favorites"
                                 :key="item.title"
                                 avatar
                         >
@@ -132,7 +137,7 @@
                         <div>{{userDescription}}</div>
                     </div>
                 </v-card-title>
-                <v-card-actions>
+                <v-card-actions v-if="!isUserEdit">
                     <v-btn flat color="orange">Связаться</v-btn>
                     <v-btn flat color="orange">Позвонить</v-btn>
                 </v-card-actions>
@@ -145,7 +150,6 @@
                     align-with-title
             >
                 <v-tabs-slider color="blue-grey"></v-tabs-slider>
-
                 <v-tab v-for="(item,i) in tabs" :key="i">
                     {{ item }}
                 </v-tab>
@@ -155,81 +159,14 @@
                 <v-tab-item :key="0">
                     <v-card flat>
                         <v-card-text>
-                            <!-- Услуги -->
-                            <Service/>
-                            <br/>
                             <!-- Категории -->
-                            <v-card>
-                                <v-card-title primary-title>
-                                    <div>
-                                        <h3 class="headline mb-0">Категории</h3>
-                                    </div>
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-list subheader>
-                                        <v-list-tile
-                                                v-for="item in items"
-                                                :key="item.title"
-                                                avatar
-                                        >
-                                            <v-list-tile-avatar>
-                                                <img :src="item.avatar">
-                                            </v-list-tile-avatar>
-
-                                            <v-list-tile-content>
-                                                <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                                            </v-list-tile-content>
-
-                                            <v-list-tile-action>
-                                                <v-icon>delete_forever</v-icon>
-                                            </v-list-tile-action>
-                                        </v-list-tile>
-                                    </v-list>
-                                </v-card-text>
-                                <v-btn block flat color="grey" @click.prevent="dialogCategory = !dialogCategory">
-                                    Добавить категории
-                                </v-btn>
-                            </v-card>
-
+                            <Categories :isUser="isUserEdit"/>
                             <br/>
-                            <v-card>
-                                <v-card-title primary-title>
-                                    <div>
-                                        <h3 class="headline mb-0">Работы</h3>
-                                    </div>
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-layout row wrap>
-                                        <v-flex
-                                                v-for="n in 9"
-                                                :key="n"
-                                                xs4
-                                                d-flex
-                                        >
-                                            <v-card flat tile class="d-flex">
-                                                <v-img @click="`#`"
-                                                       :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                                                       :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-                                                       aspect-ratio="1"
-                                                       class="grey lighten-2"
-                                                >
-                                                    <v-layout
-                                                            slot="placeholder"
-                                                            fill-height
-                                                            align-center
-                                                            justify-center
-                                                            ma-0
-                                                    >
-                                                        <v-progress-circular indeterminate
-                                                                             color="grey lighten-5"></v-progress-circular>
-                                                    </v-layout>
-                                                </v-img>
-                                            </v-card>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-card-text>
-                                <v-btn block flat color="grey">Добавить работы</v-btn>
-                            </v-card>
+                            <!-- Услуги -->
+                            <Service :isUser="isUserEdit" :data="user.services" v-if="isServiceView"/>
+                            <br/>
+                            <!-- Портфолио -->
+                            <Works  v-if="isPortfolioView" :models="user.portfolio"/>
                         </v-card-text>
                     </v-card>
                 </v-tab-item>
@@ -245,23 +182,23 @@
 
         <!-- Настройки -->
         <v-dialog
-                v-model="dialog"
+                v-if="isUserEdit"
+                v-model="dialogUserEdit"
                 max-width="500px"
                 hide-overlay
                 transition="dialog-bottom-transition"
                 scrollable
         >
 
-
             <v-card tile>
                 <v-toolbar card dark color="blue-grey">
-                    <v-btn icon dark @click.native="dialog = false">
+                    <v-btn icon dark @click.native="dialogUserEdit = false">
                         <v-icon>close</v-icon>
                     </v-btn>
                     <v-toolbar-title>Настройки</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        <v-btn dark flat @click.native="dialog = false">Сохранить</v-btn>
+                        <v-btn dark flat @click.native="onSaveUser">Сохранить</v-btn>
                     </v-toolbar-items>
 
                 </v-toolbar>
@@ -274,66 +211,49 @@
                                 <v-card-text>
                                     <form>
                                         <v-text-field
-                                                v-model="form.last_name"
+                                                v-model="user.first_name"
                                                 :counter="255"
                                                 label="Имя"
                                                 required
                                         ></v-text-field>
                                         <v-text-field
-                                                v-model="form.first_name"
+                                                v-model="user.surname"
                                                 :counter="255"
                                                 label="Фамилия"
                                                 required
                                         ></v-text-field>
-
                                         <v-text-field
-                                                v-model="form.phone"
-                                                label="Телефон"
-                                                required
-                                        ></v-text-field>
-                                        <v-text-field
-                                                v-model="form.phone1"
+                                                v-model="user.phone1"
                                                 label="Доп. телефон"
                                         ></v-text-field>
-
                                         <v-text-field
-                                                v-model="form.email"
+                                                v-model="user.email"
                                                 label="Почта"
                                         ></v-text-field>
                                         <v-text-field
-                                                v-model="form.email1"
+                                                v-model="user.email1"
                                                 label="Доп. почта"
                                         ></v-text-field>
-
                                         <v-select
                                                 item-value="id"
                                                 :items="sexItems"
-                                                v-model="form.sex"
+                                                v-model="user.gender"
                                                 label="Пол"
                                         ></v-select>
-
                                         <v-textarea
                                                 label="Описание"
-                                                v-model="form.description"
+                                                v-model="user.about"
                                         ></v-textarea>
-
                                         <v-checkbox
-                                                v-model="form.isDeparture"
+                                                v-model="user.home_call"
                                                 label="Выезд на дом"
                                                 type="checkbox"
                                         ></v-checkbox>
                                         <v-checkbox
-                                                v-model="form.isHome"
+                                                v-model="user.isHome"
                                                 label="У специалиста"
                                                 type="checkbox"
                                         ></v-checkbox>
-                                        <v-checkbox
-                                                v-model="form.isReviews"
-                                                label="Только с отззывами"
-                                                type="checkbox"
-
-                                        ></v-checkbox>
-
                                     </form>
                                 </v-card-text>
                             </v-card>
@@ -341,46 +261,7 @@
 
                         <v-expansion-panel-content>
                             <div slot="header">Время</div>
-                            <v-card>
-                                <v-card-text>
-                                    <form action="">
-                                        <v-menu
-                                                ref="menu"
-                                                :close-on-content-click="false"
-                                                v-model="menu"
-                                                :nudge-right="40"
-                                                lazy
-                                                transition="scale-transition"
-                                                offset-y
-                                                full-width
-                                        >
-                                            <v-text-field
-                                                    slot="activator"
-                                                    v-model="dateFormatted"
-                                                    label="Date"
-                                                    hint="MM/DD/YYYY format"
-                                                    persistent-hint
-                                                    prepend-icon="event"
-                                                    @blur="date = parseDate(dateFormatted)"
-                                            ></v-text-field>
-                                            <v-date-picker v-model="date" no-title
-                                                           @input="menu = false"></v-date-picker>
-                                        </v-menu>
-
-
-                                        <v-container fluid grid-list-md>
-                                            <v-layout row wrap>
-                                                <v-flex v-for="(item,i) in 16" :key="i" xs12 md6>
-                                                    <v-checkbox
-                                                            :label="(item + 6) + `:00  - ` + (i + 7) + `:00`"
-                                                            hide-details
-                                                    ></v-checkbox>
-                                                </v-flex>
-                                            </v-layout>
-                                        </v-container>
-                                    </form>
-                                </v-card-text>
-                            </v-card>
+                            <UserTime/>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                     <v-divider></v-divider>
@@ -389,129 +270,38 @@
                 <div style="flex: 1 1 auto;"></div>
             </v-card>
         </v-dialog>
-        <!-- Услуги -->
-        <v-dialog
-                v-model="dialogService"
-                max-width="500px"
-                hide-overlay
-                transition="dialog-bottom-transition"
-                scrollable
-        >
-            <v-card tile>
-                <v-toolbar card dark color="blue-grey">
-                    <v-btn icon dark @click.native="dialogService = false">
-                        <v-icon>close</v-icon>
-                    </v-btn>
-                    <v-toolbar-title>Услуги</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-toolbar-items>
-                        <v-btn dark flat @click.native="dialogService = false">Добавить</v-btn>
-                    </v-toolbar-items>
 
-                </v-toolbar>
-                <v-card-text>
-                    <form color="blue-grey">
-                        <v-text-field
-                                v-model="formService.description"
-                                :counter="255"
-                                label="Описание"
-                                required
-                        ></v-text-field>
-                        <v-text-field
-                                v-model="formService.price"
-                                :counter="10"
-                                label="Цена"
-                                required
-                        ></v-text-field>
-                        <v-text-field
-                                v-model="formService.currency"
-                                :counter="10"
-                                label="Валюта"
-                                required
-                        ></v-text-field>
-                        <v-text-field
-                                v-model="formService.count"
-                                :counter="10"
-                                label="Количество"
-                                required
-                        ></v-text-field>
-                        <v-text-field
-                                v-model="formService.unit"
-                                :counter="10"
-                                label="Ед. измерения"
-                                required
-                        ></v-text-field>
-                    </form>
-                </v-card-text>
-
-                <div style="flex: 1 1 auto;"></div>
-            </v-card>
-        </v-dialog>
         <!-- Категории -->
-        <v-dialog
-                v-model="dialogCategory"
-                max-width="500px"
-                hide-overlay
-                transition="dialog-bottom-transition"
-                scrollable
-        >
-            <v-card tile>
-                <v-toolbar card dark color="blue-grey">
-                    <v-btn icon dark @click.native="dialogCategory = false">
-                        <v-icon>close</v-icon>
-                    </v-btn>
-                    <v-toolbar-title>Категории</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-toolbar-items>
-                        <v-btn dark flat @click.native="dialogCategory = false">Добавить</v-btn>
-                    </v-toolbar-items>
 
-                </v-toolbar>
-                <v-card-text>
-                    <v-list
-                            subheader
-                            two-line
-                    >
-                        <v-list-tile @click="">
-                            <v-list-tile-action>
-                                <v-checkbox v-model="formCategories.notifications"></v-checkbox>
-                            </v-list-tile-action>
-                            <v-list-tile-avatar>
-                                <img :src="`assets/none.jpg`">
-                            </v-list-tile-avatar>
-
-                            <v-list-tile-content @click="formCategories.notifications = !formCategories.notifications">
-                                <v-list-tile-title>Notifications</v-list-tile-title>
-                                <v-list-tile-sub-title>Allow notifications</v-list-tile-sub-title>
-                            </v-list-tile-content>
-                        </v-list-tile>
-                    </v-list>
-                </v-card-text>
-
-                <div style="flex: 1 1 auto;"></div>
-            </v-card>
-        </v-dialog>
 
     </v-layout>
 </template>
 
 <script>
     import Reviews from '../../../components/Reviews'
+    import UserTime from './components/UserTime'
     import Service from './components/Service'
+    import Categories from './components/Categories'
+    import Works from './components/Works'
+
+    import AvatarCropper from "vue-avatar-cropper"
 
     export default {
         name: "User",
         components: {
+            UserTime,
             Reviews,
-            Service
+            Service,
+            Categories,
+            Works,
+            AvatarCropper,
         },
         created: function () {
-            let url = this.id === 0 ? 'client/profile/get' : '';
-            net.get(url, {id : this.id})
+            let url = !this.id ? 'client/profile/get' : `api/general/client/${this.id}/get`;
+            net.get(url)
                 .onSuccess((user) => {
                     this.user = user;
                 });
-
         },
         props:{
             id: {
@@ -520,16 +310,28 @@
             },
         },
         data: () => ({
-            user: {},
-            rating: 4.5,
-            dialog: false,
-            dialogService: false,
-            dialogCategory: false,
+            favorites:[],
+            user: {
+                gender: "",
+                last_name: "",
+                first_name: "",
+                surname: "",
+                phone: "",
+                phone1: "",
+                home_call: "",
+                email: "",
+                email1: "",
+                address: "Не указан",
+                about: "Описания нет",
+            },
             sexItems: [
                 {'id': 0, 'text': 'Не указано'},
                 {'id': 1, 'text': 'Мужской'},
                 {'id': 2, 'text': 'Женский'},
             ],
+            rating: 4.5,
+            dialogService: false,
+            dialogUserEdit: false,
             form: {
                 last_name: "",
                 first_name: "",
@@ -542,18 +344,7 @@
                 isHome: true,
                 isReviews: true,
             },
-            formService: {
-                description: "",
-                price: "",
-                currency: "",
-                count: "",
-                unit: "",
-            },
-            formCategories: {
-                items: [],
 
-                notifications: false,
-            },
             tab: null,
             tabs: [
                 'Кейсы', 'Отзывы'
@@ -578,51 +369,63 @@
 
                 },
             ],
-            date: null,
-            dateFormatted: null,
-            menu: false,
+
+
         }),
 
         computed: {
+            //=====================================
+            isUserEdit() {
+                return this.id === 0
+            },
             computedDateFormatted() {
                 return this.formatDate(this.date)
             },
             userFullName(){
-                let user = this.$store.getters.user;
-
-                return user.first_name + ' ' + user.surname;
+                if(!this.user.first_name){
+                    return 'Имя не указано';
+                }
+                return this.user.first_name + ' ' + this.user.surname;
             },
             userDescription(){
-                let user = this.$store.getters.user;
-                return user.about;
+                return this.user.about;
             },
             //======================================
             userPhone(){
-                let user = this.$store.getters.user;
-                return user.phone;
+                return this.user.phone;
             },
             userIsPhone(){
-                let user = this.$store.getters.user;
-                return user.phone ? user.phone.length > 0 : false;
+                return this.user.phone ? this.user.phone.length > 0 : false;
             },
             //======================================
             userEmail(){
-                let user = this.$store.getters.user;
-                return user.email;
+                return this.user.email;
             },
             userIsEmail(){
-                let user = this.$store.getters.user;
-                return user.email ? user.email.length > 0 : false;
+                return this.user.email ? this.user.email.length > 0 : false;
             },
 
             userAvatar(){
-                let user = this.$store.getters.user;
-                return user.avatar;
+                return this.user.avatar;
             },
             userAddress(){
-                let user = this.$store.getters.user;
-                return user.address;
+                return this.user.address;
+            },
+            //=======================================
+            isServiceView(){
+                return this.id === 0 || this.user.services.length > 0
+            },
+            isPortfolioView(){
+                return this.id === 0 || this.user.services.length > 0
+            },
+            //========================================
+            imageUpload(){
+                return net.createUrl('client/portfolio/add-image')
+            },
+            imageHeaders(){
+                return net.getHeaders();
             }
+
         },
         watch: {
             date(val) {
@@ -630,18 +433,19 @@
             }
         },
         methods: {
-            formatDate(date) {
-                if (!date) return null
-
-                const [year, month, day] = date.split('-')
-                return `${month}/${day}/${year}`
+            onSaveUser(){
+               let $this = this;
+                net.post('client/profile/update', this.user)
+                    .onSuccess(()=>{
+                        $this.dialogUserEdit = false;
+                    })
+                    .onError('Ошибка при обновлении пользователя')
             },
-            parseDate(date) {
-                if (!date) return null
-
-                const [month, day, year] = date.split('/')
-                return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+            handleUploaded(resp) {
+                showModal('Аватарка обновленна');
+               // this.user.avatar = resp.relative_url;
             }
+
         }
     }
 </script>

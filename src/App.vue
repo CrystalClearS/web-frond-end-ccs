@@ -9,7 +9,7 @@
         name: 'App',
         components: {},
         created: function () {
-
+            debugger;
             localStorage.removeItem('access');
             let refresh = localStorage.getItem('refresh');
 

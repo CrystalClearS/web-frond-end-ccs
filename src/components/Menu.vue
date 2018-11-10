@@ -64,11 +64,11 @@
         name: "Menu",
         data: () => ({
             items: [
-                {isAuth: false, icon: 'home', text: 'Главная', action: '/'},
-                {isAuthWindow : true, isAuth: false, icon: 'person', text: 'Профиль', action: '/profile'},
-                {isAuth: true, icon: 'message', text: 'Сообщения', action: '/message'},
-                {isAuth: true, icon: 'settings', text: 'Настройки', action: '/config'},
-                {isAuth: false, icon: 'location_on', text: 'Город', action: '/maps'},
+                {isAuth: false, icon: 'home', text: 'Главная', action: 'main'},
+                {isAuthWindow : true, isAuth: false, icon: 'person', text: 'Профиль', action: 'profile'},
+                {isAuth: true, icon: 'message', text: 'Сообщения', action: 'message'},
+                {isAuth: true, icon: 'settings', text: 'Настройки', action: 'setting'},
+                {isAuth: false, icon: 'location_on', text: 'Город', action: 'maps'},
                 // {
                 //     icon: 'keyboard_arrow_up',
                 //     'icon-alt': 'keyboard_arrow_down',
@@ -91,7 +91,7 @@
                     this.$store.dispatch('setAction', item.action);
                     return;
                 }
-                this.$router.push({path: item.action});
+                this.$router.push({name: item.action});
             }
         },
         computed: {

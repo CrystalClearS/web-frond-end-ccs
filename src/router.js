@@ -21,23 +21,33 @@ export default new Router({
             children: [
                 {
                     path: '',
-                    component: Find
+                    component: Find,
+                    name : 'main'
                 },
                 {
                     path: 'profile',
-                    component: UserProfile
+                    component: UserProfile,
+                    name : 'profile'
+                },
+                {
+                    path: 'user/:id',
+                    component: UserProfile,
+                    name : 'user'
                 },
                 {
                     path: 'message',
-                    component: Message
+                    component: Message,
+                    name : 'message'
                 },
                 {
                     path: 'config',
-                    component: Setting
+                    component: Setting,
+                    name : 'setting'
                 },
                 {
                     path: 'maps',
-                    component: Maps
+                    component: Maps,
+                    name : 'maps'
                 }
             ]
         }

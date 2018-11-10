@@ -237,6 +237,14 @@ class Net {
                 this.load(this.pool.shift());
             });
     }
+    createUrl(url){
+        return this.path + url;
+    }
+    getHeaders(){
+        let headers = {};
+        headers['Authorization'] = "Access " + localStorage.getItem('access');
+        return headers;
+    }
     //==================================================
     // Сокращения
     get(url, data){

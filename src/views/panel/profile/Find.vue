@@ -64,7 +64,7 @@
                                     <v-img
                                             class="white--text"
                                             width="100%"
-                                            src="assets/none.jpg"
+                                            :src="item.avatar"
                                     >
                                         <v-container fill-height fluid>
                                             <v-layout fill-height>
@@ -76,12 +76,12 @@
                                     </v-img>
                                     <v-card-title>
                                         <div>
-                                            <span>Whitehaven Beach</span><br>
-                                            <span>Описание {{item}}</span>
+                                            <span>{{item.first_name}} {{item.surname}}</span><br>
+                                            <span>Описание {{item.about}}</span>
                                         </div>
                                     </v-card-title>
                                     <v-card-actions>
-                                        <v-btn flat @click="$router.push({ path: `/profile` })">Подробней</v-btn>
+                                        <v-btn flat @click="$router.push({ name: 'user', params: { id: item.id }})">Подробней</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-flex>
@@ -252,6 +252,7 @@
                         this.button.title = element.name;
                         this.button.isShow = true;
                         this.tab = 2;
+
 
                         this.users = items;
                     });
