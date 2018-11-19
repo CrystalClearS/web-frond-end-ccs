@@ -179,8 +179,10 @@
                     .onSuccess((items)=>{
                         $this.isLoad = false;
                         $this.$store.dispatch('setShowAuth', false);
-                        $this.$router.push({path: this.$store.getters.action});
 
+                        $this.$router.push({name: this.$store.getters.action});
+
+                        //$this.$router.push({path: this.$store.getters.action});
                         net.updateUser((user)=>{
                             $this.$store.dispatch('setUser', user);
                         });

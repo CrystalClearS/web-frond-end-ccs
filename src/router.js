@@ -16,7 +16,6 @@ export default new Router({
     routes: [
         {
             path: '/apps',
-            name: 'home',
             component: Panel,
             children: [
                 {
