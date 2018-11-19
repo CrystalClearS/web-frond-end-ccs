@@ -143,6 +143,7 @@ class Net {
             url    : data.url,
             method : data.method,
             responseType : 'json',
+            withCredentials: false,
         };
         if(data['headers']){
             request.headers = data['headers'];
