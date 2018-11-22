@@ -59,7 +59,10 @@
         <!-- Авторизация -->
         <v-dialog v-model="isShowAuthWindow" persistent max-width="600px" >
             <v-card>
-                <v-toolbar dark color="primary">
+                <v-toolbar
+                        color="blue-grey"
+                        dark
+                >
                     <v-btn icon dark @click.native="isShowAuthWindow = false">
                         <v-icon>close</v-icon>
                     </v-btn>
@@ -87,13 +90,11 @@
                                     ></v-text-field>
                                     <span class="caption grey--text text--darken-1"></span>
                                 </v-card-text>
-                                <v-btn color="primary" @click="onGetCode">
+                                <v-btn color="blue-grey" dark @click="onGetCode">
                                     Получить код
                                 </v-btn>
-                                <v-btn color="primary" @click="e1 = 2">
-                                    Далее
-                                </v-btn>
-                                <v-btn flat>Отмена</v-btn>
+
+                                <v-btn flat @click="onAuthClose">Отмена</v-btn>
                             </div>
                             <v-progress-linear v-show="isLoad" :indeterminate="true"></v-progress-linear>
                         </v-stepper-content>
@@ -107,11 +108,11 @@
                                 <span class="caption grey--text text--darken-1"></span>
                             </v-card-text>
 
-                            <v-btn color="primary" @click="onAuthorization">
+                            <v-btn color="primary" dark @click="onAuthorization">
                                 Готово
                             </v-btn>
 
-                            <v-btn flat>Отмена</v-btn>
+                            <v-btn flat @click="onAuthClose">Отмена</v-btn>
 
                         </v-stepper-content>
                     </v-stepper-items>
@@ -157,6 +158,9 @@
         },
         methods:{
             //
+            onAuthClose(){
+                this.$store.dispatch('setShowAuth', false);
+            },
             onGetCode(){
                 let $this   = this;
                 this.isLoad = true;
