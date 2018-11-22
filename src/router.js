@@ -15,7 +15,8 @@ export default new Router({
     base: process.env.BASE_URL,
     routes: [
         {
-            path: '/apps',
+            path: '/',
+         //   name: 'home',
             component: Panel,
             children: [
                 {
