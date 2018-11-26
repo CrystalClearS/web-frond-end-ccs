@@ -5,6 +5,7 @@ import Panel from './views/panel/Panel'
 import UserProfile from './views/panel/profile/User'
 import Find from './views/panel/profile/Find'
 import Message from './views/panel/profile/Message'
+import Chat from './views/panel/profile/Chat'
 import Setting from './views/panel/profile/Setting'
 import Maps from './views/panel/profile/Maps'
 
@@ -35,9 +36,14 @@ export default new Router({
                     name : 'user'
                 },
                 {
-                    path: 'message',
+                    path: 'message_list',
                     component: Message,
                     name : 'message'
+                },
+                {
+                    path: 'chat',
+                    component: Chat,
+                    name : 'chat'
                 },
                 {
                     path: 'config',
